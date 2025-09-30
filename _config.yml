@@ -1,0 +1,12 @@
+title: USDM Weekly Visualizations
+description: Weekly US Drought Monitor (USDM) maps and videos
+author: R. Kyle Bocinsky
+url: "https://strong-fsa.github.io/usdm-viz/"  # Your GitHub Pages URL
+baseurl: "/usdm-viz"
+
+remote_theme: jekyll/minima
+plugins:
+  - jekyll-remote-theme
+
+# minima:
+#   skin: classic
