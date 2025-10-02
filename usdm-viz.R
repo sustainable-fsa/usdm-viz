@@ -11,8 +11,8 @@ install.packages("pak",
 
 pak::pak(
   c(
+    "arrow?source",
     "sf?source",
-    "terra?source",
     "tidyverse",
     "png",
     "ragg",
@@ -28,7 +28,6 @@ pak::pak(
 
 library(magrittr)
 library(tidyverse)
-library(terra)
 library(sf)
 library(furrr)
 
