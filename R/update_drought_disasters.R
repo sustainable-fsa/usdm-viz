@@ -154,7 +154,7 @@ update_drought_disasters <-
         `Designation Code`
       ) %>%
       dplyr::arrange(dplyr::desc(`CROP DISASTER YEAR`), `Designation Number`, COUNTY_FIPS) %T>%
-      arrow::write_parquet(sink = file.path(parquet_dir, "secretarial.parquet"),
+      arrow::write_parquet(sink = file.path(out_dir, "secretarial.parquet"),
                            version = "latest",
                            compression = "snappy",
                            use_dictionary = TRUE)
@@ -232,7 +232,7 @@ update_drought_disasters <-
                      `Declaration Number`,
                      `Amendment No.`,
                      COUNTY_FIPS) %T>%
-      arrow::write_parquet(sink = file.path(parquet_dir, "presidential.parquet"),
+      arrow::write_parquet(sink = file.path(out_dir, "presidential.parquet"),
                            version = "latest",
                            compression = "snappy",
                            use_dictionary = TRUE)

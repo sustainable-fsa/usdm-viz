@@ -41,6 +41,8 @@ usdm_png <- update_usdm_video()
 source("R/update_usdm_counties_video.R")
 usdm_counties_png <- update_usdm_counties_video()
 
+source("R/update_drought_disasters.R")
+drought_disasters_png <- update_drought_disasters()
 
 # source("R/update_droughtlook.R")
 # # source("R/update_usdm_change.R")
