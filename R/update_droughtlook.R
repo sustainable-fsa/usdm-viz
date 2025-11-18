@@ -159,8 +159,10 @@ update_droughtlook <-
     
     
     ## plot the droughtlooks
-    plan(future.callr::callr, 
-         workers = parallel::detectCores())
+    plan(
+      strategy = multisession, 
+      workers = parallel::detectCores()
+    )
     
     droughtlooks %<>%
       furrr::future_map_chr(
@@ -180,13 +182,13 @@ update_droughtlook <-
               # dplyr::group_by(outlook, date, scale, target_date) %>%
               # dplyr::summarise(.groups = "drop") %>%
               # sf::st_cast("POLYGON", warn = FALSE) %>%
-              sf::st_intersection(
-                get_oconus(rotate = FALSE) %>%
-                  rmapshaper::ms_simplify() %>%
-                  sf::st_geometry() %>%
-                  sf::st_transform("ESRI:102003") %>%
-                  sf::st_make_valid()
-              ) %>%
+              # sf::st_intersection(
+              #   get_oconus(rotate = FALSE) %>%
+              #     rmapshaper::ms_simplify() %>%
+              #     sf::st_geometry() %>%
+              #     sf::st_transform("ESRI:102003") %>%
+              #     sf::st_make_valid()
+              # ) %>%
               sf::st_cast("MULTIPOLYGON", warn = FALSE) %>%
               st_set_agr("constant") %>%
               sf::st_cast("POLYGON", warn = FALSE) %>%
@@ -215,30 +217,36 @@ update_droughtlook <-
             date <- droughtlook$date[[1]]
             
             p <-
-              ggplot(get_oconus()) +
-              geom_sf(fill = "gray80",
+              ggplot(get_oconus(layer = "oconus")) +
+              geom_sf(data = get_oconus(layer = "oconus"),
+                      fill = "gray80",
                       color = NA,
                       show.legend = FALSE) +
               geom_sf(aes(fill = outlook),
                       data = droughtlook,
                       color = "white",
-                      size = 0.1,
+                      size = 0.05,
                       show.legend = T) +
-              geom_sf(data = get_oconus_states(),
+              geom_sf(data = get_oconus(layer = "states") %>%
+                        rmapshaper::ms_innerlines() %>%
+                        sf::st_cast("MULTILINESTRING"),
                       color = "white",
-                      alpha = 0,
+                      # alpha = 0,
                       show.legend = FALSE,
-                      size = 0.2) +
+                      linewidth = 0.2) +
               scale_fill_manual(values = c("#A4A056",
                                            "#D6C8AF",
                                            "#884F39",
                                            "#FED750"),
+                                na.value = NA,
                                 drop = FALSE,
+                                na.translate = FALSE,
                                 name = paste0("US Drought Outlook\nthrough ",
                                               format(droughtlook$target_date[[1]], "%b %e, %Y") %>% 
                                                 stringr::str_squish()),
                                 guide = guide_legend(direction = "vertical",
-                                                     title.position = "top") ) +
+                                                     title.position = "top",
+                                                     ncol = 1) ) +
               usdm_layout(attribution = "The U.S. Drought Outlook is produced by the National Oceanic and Atmospheric\nAdministration's Climate Prediction Center based on data from the\nNational Drought Mitigation Center at the University of Nebraska-Lincoln.\nMap data courtesy of NDMC and CPC. Map courtesy of the Montana Climate Office.",
                           footnote = paste0("Data released ", format(lubridate::as_date(date), "%B %e, %Y")) %>% stringr::str_squish())
             
