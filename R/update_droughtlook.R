@@ -1,6 +1,6 @@
 update_droughtlook <-
   function(
-    out_dir = "usdm-archive/droughtlook"){
+    out_dir = "docs/droughtlook"){
     
     raw_dir <-
       file.path(out_dir, "raw") %T>%
@@ -29,7 +29,10 @@ update_droughtlook <-
       stringr::str_subset("20240930.*sdo|sdo.*20240930", negate = TRUE)
     
     ## Download all raw droughtlooks
-    plan(future.callr::callr, workers = parallel::detectCores())
+    plan(
+      strategy = multisession, 
+      workers = parallel::detectCores()
+    )
     
     droughtlooks %<>%
       furrr::future_map_chr(
@@ -50,7 +53,10 @@ update_droughtlook <-
     
     
     ## process all raw droughtlooks
-    plan(future.callr::callr, workers = parallel::detectCores())
+    plan(
+      strategy = multisession, 
+      workers = parallel::detectCores()
+    )
     
     suppressMessages({
       droughtlooks %<>%
