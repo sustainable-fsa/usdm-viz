@@ -48,13 +48,4 @@ source("R/update_droughtlook.R")
 usdm_droughtlook <- update_droughtlook()
 
 # # source("R/update_usdm_change.R")
-# 
-# usdm_png <- update_usdm_video()
-# 
-# 
 # # update_usdm_change()
-# 
-# usdm_droughtlook <- update_droughtlook()
-# usdm_counties <- update_usdm_counties()
-# usdm_counties_png <- update_usdm_counties_video()
-# drought_disasters_png <- update_drought_disasters()

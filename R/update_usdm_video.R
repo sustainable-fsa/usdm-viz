@@ -1,6 +1,6 @@
 plot_usdm <-
   function(x,
-           out_dir = file.path("data","usdm")){
+           out_dir){
     
     x %<>%
       lubridate::as_date() %>%
@@ -128,13 +128,13 @@ update_usdm_video <-
                  pattern = "\\d") %>%
         sort() %>%
         dplyr::last() %>%
-        file.copy(to = file.path("docs", "usdm", "latest.png"),
+        file.copy(to = file.path(out_dir, "latest.png"),
                   overwrite = TRUE)
     })
     
     if(
-      !file.exists(file.path("docs", "usdm", "latest.mp4")) ||
-      av::av_video_info(file.path("docs", "usdm", "latest.mp4"))$video$frames <
+      !file.exists(file.path(out_dir, "latest.mp4")) ||
+      av::av_video_info(file.path(out_dir, "latest.mp4"))$video$frames <
       length(list.files(file.path(out_dir, "png")))
     ){
       system2(
@@ -150,7 +150,7 @@ update_usdm_video <-
           " -tag:v hvc1",
           " -pix_fmt yuv420p10le",
           " -an",
-          " ", file.path("docs", "usdm", "latest.mp4"),
+          " ", file.path(out_dir, "latest.mp4"),
           " -y"),
         wait = TRUE
       )
@@ -158,16 +158,23 @@ update_usdm_video <-
       system2(
         command = "ffmpeg",
         args = paste0(
-          "-i ", file.path("docs", "usdm", "latest.mp4"),
+          "-i ", file.path(out_dir, "latest.mp4"),
           " -c:v libvpx-vp9",
           " -crf 30",
           " -b:v 0",
           " -row-mt 1",
-          " ", file.path("docs", "usdm", "latest.webm"),
+          " ", file.path(out_dir, "latest.webm"),
           " -y"),
         wait = TRUE
       )
     }
     
-    return(out)
+    return(
+      list.files(
+        out_dir,
+        full.names = TRUE,
+        recursive = TRUE,
+        pattern = "latest"
+      )
+    )
   }

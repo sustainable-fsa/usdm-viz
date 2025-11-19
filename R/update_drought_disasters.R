@@ -1,5 +1,7 @@
 update_drought_disasters <-
-  function(out_dir = "docs/disasters"){
+  function(
+    out_dir = file.path("data","disasters")
+    ){
     raw_dir <-
       file.path(out_dir, "raw") %T>%
       dir.create(recursive = TRUE,
@@ -331,6 +333,13 @@ update_drought_disasters <-
              bg = "white",
              dpi = 600)
     
-    return(file.path(out_dir, "latest.png"))
+    return(
+      list.files(
+        out_dir,
+        full.names = TRUE,
+        recursive = TRUE,
+        pattern = "latest"
+      )
+    )
     
   }
