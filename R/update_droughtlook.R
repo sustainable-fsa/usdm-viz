@@ -138,7 +138,7 @@ update_droughtlook <-
                 sf::st_make_valid() %>%
                 sf::st_cast("MULTIPOLYGON", warn = FALSE) %>%
                 sf::write_sf(dsn = parquet_out,
-                             layer_options = c("COMPRESSION=BROTLI",
+                             layer_options = c("COMPRESSION=ZSTD",
                                                "GEOMETRY_ENCODING=GEOARROW",
                                                "WRITE_COVERING_BBOX=NO"),
                              driver = "Parquet")
