@@ -22,7 +22,8 @@ pak::pak(
     "curl",
     "furrr",
     "httr2",
-    "av"
+    "av",
+    "archive"
   )
 )
 
