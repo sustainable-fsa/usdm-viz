@@ -3,7 +3,7 @@
 on:
   push:
   schedule:
-    - cron: '00 14 * * 4'  # 14:00 UTC = 8:00 AM MT (DST), every Thursday
+    - cron: "30 14 * * 4" # 14:30 UTC = 8:30 AM MT (MST), every Thursday
 
 name: update
 run-name: Update the USDM Visualization Archive
@@ -32,7 +32,7 @@ jobs:
       - name: run
         run: |
           Rscript usdm-viz.R
-  
+
       - name: commit
         run: |
           git config --local user.name "$GITHUB_ACTOR"
@@ -40,4 +40,3 @@ jobs:
           git add .
           git commit --allow-empty -m 'weekly update'
           git push
-          
