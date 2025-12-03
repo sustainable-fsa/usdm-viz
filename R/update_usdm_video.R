@@ -18,7 +18,7 @@ plot_usdm <-
     
     usdm <-
       httr2::url_modify(
-        "https://sustainable-fsa.github.io",
+        "https://sustainable-fsa.com",
         path = file.path("usdm",
                          "usdm",
                          "data",

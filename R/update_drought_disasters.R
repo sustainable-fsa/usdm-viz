@@ -5,7 +5,7 @@ update_drought_disasters <-
     
     latest_secretarial <-
       jsonlite::fromJSON(
-        "https://sustainable-fsa.github.io/fsa-disasters/manifest.json"
+        "https://sustainable-fsa.com/fsa-disasters/manifest.json"
       ) |>
       dplyr::filter(stringr::str_detect(path, "_SEC_")) %$%
       mtime |>
@@ -18,7 +18,7 @@ update_drought_disasters <-
       lubridate::year()
     
     disasters <-
-      "https://sustainable-fsa.github.io/fsa-disasters/fsa-disasters.parquet" |>
+      "https://sustainable-fsa.com/fsa-disasters/fsa-disasters.parquet" |>
       # "fsa-disasters.parquet" |>
       arrow::read_parquet() |>
       dplyr::filter(`Designation/Declaration Type` == "Secretarial",
