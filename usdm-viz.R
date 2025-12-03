@@ -12,7 +12,7 @@ install.packages("pak",
 pak::pak(
   c(
     "arrow",
-    "sf",
+    "sf?source",
     "tidyverse",
     "png",
     "ragg",
