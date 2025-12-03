@@ -38,15 +38,39 @@ source("R/usdm_layout.R")
 
 source("R/update_usdm_video.R")
 usdm_png <- update_usdm_video()
+list.files(file.path("data","usdm"),
+           full.names = TRUE,
+           recursive = FALSE,
+           include.dirs = FALSE) %>%
+  file.copy(to = file.path("docs","usdm"),
+            overwrite = TRUE)
 
 source("R/update_usdm_counties_video.R")
 usdm_counties_png <- update_usdm_counties_video()
+list.files(file.path("data","usdm-counties"),
+           full.names = TRUE,
+           recursive = FALSE,
+           include.dirs = FALSE) %>%
+  file.copy(to = file.path("docs","usdm-counties"),
+            overwrite = TRUE)
 
 source("R/update_drought_disasters.R")
 drought_disasters_png <- update_drought_disasters()
+# list.files(file.path("data","disasters"),
+#            full.names = TRUE,
+#            recursive = FALSE,
+#            include.dirs = FALSE) %>%
+#   file.copy(to = file.path("docs","usdm-counties"),
+#             overwrite = TRUE)
 
 source("R/update_droughtlook.R")
 usdm_droughtlook <- update_droughtlook()
+# list.files(file.path("data","droughtlook"),
+#            full.names = TRUE,
+#            recursive = FALSE,
+#            include.dirs = FALSE) %>%
+#   file.copy(to = file.path("docs","usdm-counties"),
+#             overwrite = TRUE)
 
 # # source("R/update_usdm_change.R")
 # # update_usdm_change()
