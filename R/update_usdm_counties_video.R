@@ -21,6 +21,7 @@ plot_usdm_county <-
     year = dplyr::case_when(
       year <= 2010 ~ 2000, 
       year %in% c(2012, 2013) ~ 2010,
+      year == 2026 ~ 2024,
       .default = year - 1
     )
     
