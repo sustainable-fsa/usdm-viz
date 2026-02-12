@@ -107,7 +107,7 @@ plot_usdm <-
   }
 
 update_usdm_video <-
-  function(as_of = lubridate::today(),
+  function(as_of = lubridate::today("America/Denver"),
            out_dir = file.path("data", "usdm")){
     plan(
       strategy = multisession, 

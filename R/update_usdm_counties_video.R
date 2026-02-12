@@ -140,7 +140,7 @@ plot_usdm_county <-
   }
 
 update_usdm_counties_video <-
-  function(as_of = lubridate::today(),
+  function(as_of = lubridate::today("America/Denver"),
            out_dir = file.path("data", "usdm-counties")){
     plan(
       strategy = multisession, 

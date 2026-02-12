@@ -4,7 +4,7 @@ get_usdm_dates <-
       lubridate::as_date()
     
     usdm_dates <-
-      seq(lubridate::as_date("20000104"), lubridate::today(), "1 week")
+      seq(lubridate::as_date("20000104"), lubridate::today("America/Denver"), "1 week")
     
     usdm_dates <- usdm_dates[(as_of - usdm_dates) >= 2]
     
