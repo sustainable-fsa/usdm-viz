@@ -2,6 +2,9 @@ get_oconus <-
   function(layer = "counties",
            year = 2024){
     
+    if(year > 2024)
+      year <- 2024
+    
     dir.create("docs/census",
                recursive = TRUE,
                showWarnings = FALSE)
@@ -18,7 +21,8 @@ get_oconus <-
       counties <-
         tigris::counties(cb = TRUE,
                          resolution = "5m",
-                         year = year) %>%
+                         year = year
+                         ) %>%
         dplyr::arrange(STATEFP, COUNTYFP) %>%
         dplyr::filter(!(STATEFP %in% c("60", "78", "14", "52", "69", "66"))) %>%
         sf::st_transform("WGS84") %>%
