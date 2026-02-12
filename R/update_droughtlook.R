@@ -128,7 +128,7 @@ update_droughtlook <-
                 #   get_oconus(rotate = FALSE) %>%
                 #     sf::st_geometry()
                 # ) %>%
-
+                
                 dplyr::transmute(date,
                                  scale = droughtlook_scale,
                                  outlook,
@@ -137,11 +137,13 @@ update_droughtlook <-
                 sf::st_transform("OGC:CRS84") %>%
                 sf::st_make_valid() %>%
                 sf::st_cast("MULTIPOLYGON", warn = FALSE) %>%
-                sf::write_sf(dsn = parquet_out,
-                             layer_options = c("COMPRESSION=ZSTD",
-                                               "GEOMETRY_ENCODING=GEOARROW",
-                                               "WRITE_COVERING_BBOX=NO"),
-                             driver = "Parquet")
+                sf::write_sf(
+                  dsn = parquet_out,
+                  driver = "Parquet",
+                  layer_options = c("COMPRESSION=ZSTD",
+                                    "COMPRESSION_LEVEL=13"),
+                  delete_dsn = TRUE
+                )
               
               # sf::sf_use_s2(TRUE)
               unlink(file.path(tempdir(), tools::file_path_sans_ext(basename(x))), recursive = TRUE)
@@ -208,11 +210,11 @@ update_droughtlook <-
                                                         "Persistence",
                                                         "Development"),
                                              ordered = TRUE))# %>%
-              # sf::st_intersection(               
-              #   get_oconus() %>%
-              #     sf::st_geometry()
-              # ) %>%
-              # sf::st_cast("MULTIPOLYGON", warn = FALSE)
+            # sf::st_intersection(               
+            #   get_oconus() %>%
+            #     sf::st_geometry()
+            # ) %>%
+            # sf::st_cast("MULTIPOLYGON", warn = FALSE)
             
             date <- droughtlook$date[[1]]
             
