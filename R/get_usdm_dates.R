@@ -1,5 +1,5 @@
 get_usdm_dates <-
-  function(as_of = lubridate::today()){
+  function(as_of = lubridate::today("America/Denver")){
     as_of %<>%
       lubridate::as_date()
     
