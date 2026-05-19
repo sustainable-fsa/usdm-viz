@@ -23,7 +23,7 @@ update_drought_disasters <-
       arrow::read_parquet() |>
       dplyr::filter(`Designation/Declaration Type` == "Secretarial",
                     stringr::str_detect(`Disaster Type`, "DROUGHT"),
-                    lubridate::year(`Begin Date`) == year) |>
+                    lubridate::year(`Begin Date`) == year | (lubridate::year(`Begin Date`) == (year - 1) & is.na(`End Date`))) |>
       dplyr::arrange(`Designation Code`) %>%
       dplyr::distinct(FIPS, .keep_all = TRUE)
     
