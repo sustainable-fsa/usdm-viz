@@ -1,7 +1,6 @@
 noaa <-
   "NOAA-logo-color.png" %>%
-  httr::GET() %>%
-  httr::content(type = "image/png") %>%
+  png::readPNG() %>%
   grid::rasterGrob(interpolate=TRUE,
                    width = unit(0.75, "in"),
                    height = unit(0.75, "in"),
@@ -11,8 +10,7 @@ noaa <-
 
 nidis <-
   "NOAA-NIDIS-logo.png" %>%
-  httr::GET() %>%
-  httr::content(type = "image/png") %>%
+  png::readPNG() %>%
   grid::rasterGrob(interpolate=TRUE,
                    # width = unit(0.75, "in"),
                    height = unit(0.7, "in"),
@@ -22,8 +20,7 @@ nidis <-
 
 ndmc <- 
   "NDMC-logo-color.png" %>%
-  httr::GET() %>%
-  httr::content(type = "image/png") %>%
+  png::readPNG() %>%
   grid::rasterGrob(interpolate=TRUE,
                    width = unit(0.75, "in"),
                    height = unit(0.75, "in"),
