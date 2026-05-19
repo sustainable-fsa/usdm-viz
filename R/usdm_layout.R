@@ -1,5 +1,5 @@
 noaa <-
-  "https://droughtmonitor.unl.edu/webfiles/logos/NOAA/png/NOAA-logo-color.png" %>%
+  "NOAA-logo-color.png" %>%
   httr::GET() %>%
   httr::content(type = "image/png") %>%
   grid::rasterGrob(interpolate=TRUE,
@@ -10,7 +10,7 @@ noaa <-
                    just = "left")
 
 nidis <-
-  "https://upload.wikimedia.org/wikipedia/commons/e/ef/NOAA-NIDIS-logo.png" %>%
+  "NOAA-NIDIS-logo.png" %>%
   httr::GET() %>%
   httr::content(type = "image/png") %>%
   grid::rasterGrob(interpolate=TRUE,
@@ -21,7 +21,7 @@ nidis <-
                    just = "center")
 
 ndmc <- 
-  "https://droughtmonitor.unl.edu/webfiles/logos/NDMC/png/NDMC-logo-color.png" %>%
+  "NDMC-logo-color.png" %>%
   httr::GET() %>%
   httr::content(type = "image/png") %>%
   grid::rasterGrob(interpolate=TRUE,
