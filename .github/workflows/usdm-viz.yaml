@@ -45,5 +45,11 @@ jobs:
       - name: Verify AWS identity
         run: aws sts get-caller-identity
 
+      - name: Install packages not in the geospatial environment
+        run: |
+          Rscript -e 'pkgs <- setdiff(c("png","ragg","cols4all","av","archive","httr2"),
+                                      rownames(installed.packages()));
+                      if (length(pkgs)) install.packages(pkgs, repos = "https://cloud.r-project.org")'
+
       - name: Update archive
         run: Rscript usdm-viz.R
