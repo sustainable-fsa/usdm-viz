@@ -34,6 +34,27 @@ library(tidyverse)
 library(sf)
 library(furrr)
 
+## ---- S3 archive state --------------------------------------------------
+## Published media live at s3://sustainable-fsa/usdm-viz/ (served at
+## https://data.sustainable-fsa.com/usdm-viz/); the frame/render cache is
+## internal pipeline state under usdm-viz/_cache/ (underscore keeps it out
+## of manifests and dataset discovery).
+source("R/s3-archive.R")
+s3_preflight()
+s3_bucket_name <- Sys.getenv("S3_BUCKET", unset = "sustainable-fsa")
+s3_prefix      <- Sys.getenv("S3_PREFIX", unset = "usdm-viz")
+
+## Pull the render cache so incremental frame guards see prior work
+s3_pull(s3_bucket_name, paste0(s3_prefix, "/_cache"), "data")
+
+## Static page shells live in git under site/ and are staged into docs/
+dir.create(file.path("docs", "usdm"), recursive = TRUE, showWarnings = FALSE)
+dir.create(file.path("docs", "usdm-counties"), recursive = TRUE, showWarnings = FALSE)
+file.copy(file.path("site", "usdm", "index.html"),
+          file.path("docs", "usdm", "index.html"), overwrite = TRUE)
+file.copy(file.path("site", "usdm-counties", "index.html"),
+          file.path("docs", "usdm-counties", "index.html"), overwrite = TRUE)
+
 source("R/get_oconus.R")
 source("R/get_usdm_dates.R")
 source("R/usdm_layout.R")
@@ -76,3 +97,30 @@ usdm_droughtlook <- update_droughtlook()
 
 # # source("R/update_usdm_change.R")
 # # update_usdm_change()
+
+## ---- Publish to S3 -----------------------------------------------------
+## Media are append-only: dated files accumulate; latest.* are overwritten
+## in place. Never --delete (a fresh runner's docs/ holds only this run's
+## outputs, not the full media history).
+s3_push(s3_bucket_name, s3_prefix, "docs", delete = FALSE)
+s3_push(s3_bucket_name, paste0(s3_prefix, "/_cache"), "data", delete = FALSE)
+
+s3_verify(s3_bucket_name, s3_prefix, "docs",
+          allow_extra = character(0),
+          expect_exact = FALSE)
+
+s3_write_manifest(s3_bucket_name, s3_prefix)
+
+cf_invalidate(c(
+  paste0("/", s3_prefix, "/usdm/index.html"),
+  paste0("/", s3_prefix, "/usdm/latest.mp4"),
+  paste0("/", s3_prefix, "/usdm/latest.webm"),
+  paste0("/", s3_prefix, "/usdm/latest.png"),
+  paste0("/", s3_prefix, "/usdm-counties/index.html"),
+  paste0("/", s3_prefix, "/usdm-counties/latest.mp4"),
+  paste0("/", s3_prefix, "/usdm-counties/latest.webm"),
+  paste0("/", s3_prefix, "/usdm-counties/latest.png"),
+  paste0("/", s3_prefix, "/disasters/latest.png"),
+  paste0("/", s3_prefix, "/droughtlook/latest*"),
+  paste0("/", s3_prefix, "/_manifest.txt")
+))
