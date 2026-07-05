@@ -18,9 +18,8 @@ plot_usdm <-
     
     usdm <-
       httr2::url_modify(
-        "https://sustainable-fsa.com",
+        "https://data.sustainable-fsa.com",
         path = file.path("usdm",
-                         "usdm",
                          "data",
                          "parquet",
                          paste0("USDM_",x,".parquet"))) %>%

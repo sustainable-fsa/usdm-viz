@@ -37,7 +37,7 @@ plot_usdm_county <-
     
     usdm <-
       httr2::url_modify(
-        "https://sustainable-fsa.com",
+        "https://data.sustainable-fsa.com",
         path = file.path("usdm-counties",
                          "data",
                          "usdm",
