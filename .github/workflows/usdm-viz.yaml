@@ -4,7 +4,8 @@ run-name: Update the usdm-viz archive → S3
 
 on:
   schedule:
-    - cron: '0 18 * * 4'
+    # fallback only; normally dispatched from sustainable-fsa/usdm-counties
+    - cron: '20 21 * * 4'
   workflow_dispatch:
   push:
     branches: [main]
