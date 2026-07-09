@@ -147,8 +147,27 @@ update_usdm_counties_video <-
       workers = parallel::detectCores()
     )
     
+    dates <-
+      get_usdm_dates(as_of = as_of)
+
+    ## Freshness gate: probe upstream only for dates whose frame is missing
+    ## (normally just the newest week); drop unposted weeks so premature and
+    ## fallback runs no-op instead of failing in read_parquet.
+    frame_exists <-
+      file.exists(file.path(out_dir, "png",
+                            paste0(format(dates, "%Y-%m-%d"), ".png")))
+    posted <- frame_exists
+    posted[!frame_exists] <-
+      purrr::map_lgl(
+        paste0("https://data.sustainable-fsa.com/usdm-counties/data/usdm/USDM_",
+               dates[!frame_exists], ".parquet"),
+        url_exists)
+    purrr::walk(dates[!posted],
+                function(d) gate_skip(paste0("Upstream usdm-counties parquet for ", d,
+                                             " not yet published; skipping frame.")))
+
     out <-
-      get_usdm_dates(as_of = as_of) %>%
+      dates[posted] %>%
       furrr::future_map_chr(plot_usdm_county,
                             out_dir = out_dir)
     
