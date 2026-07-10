@@ -7,3 +7,8 @@
 .DS_Store
 .quarto
 .positai
+
+# S3-hosted data (purged from git history 2026-07; archive of record:
+# https://data.sustainable-fsa.com/usdm-viz/)
+docs
+data
