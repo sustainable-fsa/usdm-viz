@@ -41,13 +41,10 @@ s3_prefix      <- Sys.getenv("S3_PREFIX", unset = "usdm-viz")
 ## Pull the render cache so incremental frame guards see prior work
 s3_pull(s3_bucket_name, paste0(s3_prefix, "/_cache"), "data")
 
-## Static page shells live in git under site/ and are staged into docs/
+## Viewer page shells live in git under docs/ (also the GitHub Pages
+## publishing source); rendered media are staged alongside them below.
 dir.create(file.path("docs", "usdm"), recursive = TRUE, showWarnings = FALSE)
 dir.create(file.path("docs", "usdm-counties"), recursive = TRUE, showWarnings = FALSE)
-file.copy(file.path("site", "usdm", "index.html"),
-          file.path("docs", "usdm", "index.html"), overwrite = TRUE)
-file.copy(file.path("site", "usdm-counties", "index.html"),
-          file.path("docs", "usdm-counties", "index.html"), overwrite = TRUE)
 
 source("R/get_oconus.R")
 source("R/get_usdm_dates.R")

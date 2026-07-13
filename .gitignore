@@ -9,6 +9,14 @@
 .positai
 
 # S3-hosted data (purged from git history 2026-07; archive of record:
-# https://data.sustainable-fsa.com/usdm-viz/)
-docs
+# https://data.sustainable-fsa.com/usdm-viz/). The viewer page shells in
+# docs/ are tracked (published via GitHub Pages); media staged into docs/
+# by the pipeline are not.
+docs/*
+!docs/usdm/
+docs/usdm/*
+!docs/usdm/index.html
+!docs/usdm-counties/
+docs/usdm-counties/*
+!docs/usdm-counties/index.html
 data
