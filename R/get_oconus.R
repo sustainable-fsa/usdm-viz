@@ -16,8 +16,19 @@ get_oconus <-
         paste0("census-", year, ".topojson")
       )
     
+    ## The rendered census layers are part of the published archive (docs/
+    ## was purged from git 2026-07); pull them back before regenerating —
+    ## rebuilding from tigris + mapshaper takes minutes each run.
     if (!file.exists(outfile)) {
-      
+      archive_url <-
+        paste0("https://data.sustainable-fsa.com/usdm-viz/census/",
+               basename(outfile))
+      if (url_exists(archive_url))
+        curl::curl_download(archive_url, outfile)
+    }
+
+    if (!file.exists(outfile)) {
+
       counties <-
         tigris::counties(cb = TRUE,
                          resolution = "5m",
@@ -74,11 +85,10 @@ get_oconus <-
 mapshaper \\
   ", stringr::str_replace(outfile, "topojson", "geojson"), " \\
   -clean rewind overlap-rule=max-id \\
-  -rename-layers counties,states,oconus \\
+  -rename-layers counties \\
   -dissolve field=state copy-fields='id' + name=states \\
   -each 'id=id.slice(0,2)' target=states \\
   -dissolve + name=oconus \\
-  -rename-layers counties,states,oconus \\
   -o format=topojson quantization=1e5 fix-geometry id-field='id' bbox target=* ", outfile, "
 "
         )
