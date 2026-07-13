@@ -34,9 +34,7 @@ jobs:
       CLOUDFRONT_DISTRIBUTION_ID: E1BNL6ONVN84RI
       CLOUDFRONT_BASE: https://data.sustainable-fsa.com
     steps:
-      # Pinned to the env-caching branch for validation
-      # (mt-climate-office/actions#1); return to @v1 once it merges.
-      - uses: mt-climate-office/actions/setup-geospatial@2dbe27bc9961f4cc351e0c449cfc78c41bbc26ea
+      - uses: mt-climate-office/actions/setup-geospatial@v1
         with:
           extra-r-packages: png ragg cols4all av archive httr2
 
