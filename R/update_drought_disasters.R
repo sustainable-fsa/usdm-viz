@@ -2,7 +2,11 @@ update_drought_disasters <-
   function(
     out_dir = file.path("docs","disasters")
     ){
-    
+
+    dir.create(out_dir,
+               recursive = TRUE,
+               showWarnings = FALSE)
+
     latest_secretarial <-
       jsonlite::fromJSON(
         "https://data.sustainable-fsa.com/fsa-disasters/manifest.json"
