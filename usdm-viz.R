@@ -2,7 +2,7 @@
 #                 ask = FALSE)
 
 # Packages are provided by mt-climate-office/actions/setup-geospatial in CI;
-# extras not in that environment are installed by a workflow step.
+# extras beyond that environment are passed via its extra-r-packages input.
 # For a bare local R installation, install manually:
 # install.packages("pak", repos = "https://mac.r-project.org")
 # pak::pak(
