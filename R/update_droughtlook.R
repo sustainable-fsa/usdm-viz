@@ -1,3 +1,41 @@
+## Scrape the CPC index of posted drought outlooks. Retried: the CPC server
+## drops connections under load, and a transient miss must not fail the run.
+## Also used by the freshness gate in usdm-viz.R to decide whether any
+## outlook work exists before pulling the archive.
+droughtlook_index <-
+  function(){
+    httr::RETRY("GET", "https://ftp.cpc.ncep.noaa.gov/GIS/droughtlook",
+                times = 3, pause_base = 5) %>%
+      httr::content() %>%
+      xml2::xml_find_all(".//a") %>%
+      xml2::xml_attr("href") %>%
+      stringr::str_subset("sdo|mdo") %>%
+      stringr::str_subset("latest", negate = TRUE) %>%
+      # There is something invalid about this particular shapefile,
+      # so we're dropping it.
+      stringr::str_subset("20240930.*sdo|sdo.*20240930", negate = TRUE)
+  }
+
+## Download with retries, then stop loudly (repo convention: no silent
+## tryCatch). A partial file from a dropped connection is removed before
+## the retry so the file.exists guards never see a truncated zip.
+download_retry <-
+  function(url, destfile, tries = 3L, pause = 5){
+    for (i in seq_len(tries)) {
+      ok <- tryCatch({
+        curl::curl_download(url, destfile)
+        TRUE
+      },
+      error = function(e){
+        unlink(destfile)
+        if (i >= tries) stop(e)
+        FALSE
+      })
+      if (ok) return(destfile)
+      Sys.sleep(pause)
+    }
+  }
+
 update_droughtlook <-
   function(
     out_dir = "docs/droughtlook"){
@@ -18,15 +56,7 @@ update_droughtlook <-
                  showWarnings = FALSE)
     
     droughtlooks <-
-      httr::GET("https://ftp.cpc.ncep.noaa.gov/GIS/droughtlook") %>%
-      httr::content() %>%
-      xml2::xml_find_all(".//a") %>%
-      xml2::xml_attr("href") %>%
-      stringr::str_subset("sdo|mdo") %>%
-      stringr::str_subset("latest", negate = TRUE) %>%
-      # There is something invalid about this particular shapefile, 
-      # so we're dropping it.
-      stringr::str_subset("20240930.*sdo|sdo.*20240930", negate = TRUE)
+      droughtlook_index()
     
     ## Download all raw droughtlooks
     plan(
@@ -42,9 +72,9 @@ update_droughtlook <-
           ))
             return(file.path(raw_dir, x))
           
-          curl::curl_download(url = file.path("https://ftp.cpc.ncep.noaa.gov/GIS/droughtlook", x),
-                              destfile = 
-                                file.path(raw_dir, x))
+          download_retry(url = file.path("https://ftp.cpc.ncep.noaa.gov/GIS/droughtlook", x),
+                         destfile =
+                           file.path(raw_dir, x))
         },
         .options = furrr::furrr_options(seed = TRUE)
       )

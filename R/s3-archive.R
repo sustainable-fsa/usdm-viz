@@ -148,6 +148,21 @@ cf_invalidate <- function(paths,
   invisible(TRUE)
 }
 
+# LastModified of a single key, or NA if the object doesn't exist. Used by
+# freshness gates comparing published artifacts against upstream mtimes;
+# a missing object is an expected outcome, not an error.
+s3_object_mtime <- function(bucket, key) {
+  out <- processx::run("aws",
+                       c("s3api", "head-object",
+                         "--bucket", bucket,
+                         "--key", key,
+                         "--output", "json",
+                         s3_profile_args()),
+                       error_on_status = FALSE)
+  if (out$status != 0) return(lubridate::as_datetime(NA))
+  lubridate::as_datetime(jsonlite::fromJSON(out$stdout)$LastModified)
+}
+
 # HTTP existence probe for cross-archive freshness gates. HEAD via curl;
 # retries transient failures, TRUE only on a final 200. The tryCatch guards
 # the probe itself, not archive work — a FALSE gates a skip, never a write.
